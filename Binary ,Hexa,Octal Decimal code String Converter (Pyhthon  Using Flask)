@@ -1,0 +1,154 @@
+#pip install Flask
+from flask import Flask, render_template, request
+
+app = Flask(__name__)
+
+@app.route('/')
+def index():
+    return render_template('index.html')
+
+@app.route('/binary_to_string', methods=['POST'])
+def binary_to_string():
+    binary_input = request.form['binaryInput']
+    binary_array = [binary_input[i:i+8] for i in range(0, len(binary_input), 8)]
+
+    try:
+        string = ''.join([chr(int(binary, 2)) for binary in binary_array])
+        return string
+    except ValueError:
+        return "Invalid binary input"
+
+@app.route('/string_to_binary', methods=['POST'])
+def string_to_binary():
+    input_text = request.form['inputText']
+    binary_output = ' '.join([format(ord(char), '08b') for char in input_text])
+    return binary_output
+
+@app.route('/hex_to_string', methods=['POST'])
+def hex_to_string():
+    hex_input = request.form['hexInput']
+    hex_array = [hex_input[i:i+2] for i in range(0, len(hex_input), 2)]
+
+    try:
+        string_output = ''.join([chr(int(hex_value, 16)) for hex_value in hex_array])
+        return string_output
+    except ValueError:
+        return "Invalid hexadecimal input"
+
+@app.route('/string_to_hex', methods=['POST'])
+def string_to_hex():
+    input_text_hex = request.form['inputTextHex']
+    hex_output = ' '.join([format(ord(char), '02x') for char in input_text_hex])
+    return hex_output
+
+@app.route('/octal_to_string', methods=['POST'])
+def octal_to_string():
+    octal_input = request.form['octalInput']
+    octal_array = octal_input.split()
+
+    try:
+        string_output = ''.join([chr(int(octal, 8)) for octal in octal_array])
+        return string_output
+    except ValueError:
+        return "Invalid octal input"
+
+@app.route('/string_to_octal', methods=['POST'])
+def string_to_octal():
+    input_text_octal = request.form['inputTextOctal']
+    octal_output = ' '.join([format(ord(char), '03o') for char in input_text_octal])
+    return octal_output
+
+if __name__ == '__main__':
+    app.run(debug=True)
+
+
+
+
+//Now, create an HTML template file (index.html) in a folder named templates with the following content:
+
+
+<!DOCTYPE html>
+<html>
+<head>
+  <title>String Converters</title>
+  <style>
+    body {
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      text-align: center;
+      margin: 20px;
+    }
+    h1 {
+      font-family: 'Segoe Script', cursive;
+    }
+    input[type="text"] {
+      padding: 8px;
+      margin: 5px;
+    }
+    button {
+      padding: 8px 20px;
+      margin: 5px;
+      cursor: pointer;
+      background-color: #4CAF50;
+      color: white;
+      border: none;
+      border-radius: 4px;
+    }
+    p {
+      margin: 5px;
+    }
+  </style>
+</head>
+<body>
+  <h1>String Converters</h1>
+  <!-- Binary to String Converter -->
+  <h2>Binary to String Converter</h2>
+  <form action="/binary_to_string" method="post">
+    <input name="binaryInput" placeholder="Enter binary value" type="text" />
+    <button type="submit">Convert</button>
+  </form>
+  <p>Converted String: <span id="result">{{ converted_binary }}</span></p>
+
+  <!-- String to Binary Converter -->
+  <h2>String to Binary Converter</h2>
+  <form action="/string_to_binary" method="post">
+    <label for="inputText">Enter text:</label>
+    <input name="inputText" type="text" />
+    <button type="submit">Convert</button>
+  </form>
+  <p>Binary output: <span id="binaryOutput">{{ converted_string }}</span></p>
+
+  <!-- Hexadecimal to String Converter -->
+  <h2>Hexadecimal to String Converter</h2>
+  <form action="/hex_to_string" method="post">
+    <input name="hexInput" placeholder="Enter hexadecimal" type="text" />
+    <button type="submit">Convert</button>
+  </form>
+  <p>Text output: <span id="textOutput">{{ converted_hex }}</span></p>
+
+  <!-- String to Hexadecimal Converter -->
+  <h2>String to Hexadecimal Converter</h2>
+  <form action="/string_to_hex" method="post">
+    <label for="inputTextHex">Enter text:</label>
+    <input name="inputTextHex" type="text" />
+    <button type="submit">Convert</button>
+  </form>
+  <p>Hexadecimal output: <span id="hexOutput">{{ converted_string_hex }}</span></p>
+
+  <!-- Octal to String Converter -->
+  <h2>Octal to String Converter</h2>
+  <form action="/octal_to_string" method="post">
+    <input name="octalInput" placeholder="Enter octal" type="text" />
+    <button type="submit">Convert</button>
+  </form>
+  <p>Text output: <span id="textOutputOctal">{{ converted_octal }}</span></p>
+
+  <!-- String to Octal Converter -->
+  <h2>String to Octal Converter</h2>
+  <form action="/string_to_octal" method="post">
+    <label for="inputTextOctal">Enter text:</label>
+    <input name="inputTextOctal" type="text" />
+    <button type="submit">Convert</button>
+  </form>
+  <p>Octal output: <span id="octalOutput">{{ converted_string_octal }}</span></p>
+</body>
+</html>
